@@ -8,9 +8,7 @@
     "dev": "nodemon src/server.js",
     "migrate": "node src/database/migrations/run.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "seed": "node src/database/seeds/run.js",
-    "railway:build": "npm ci --only=production",
-    "railway:start": "npm run migrate && npm start"
+    "seed": "node src/database/seeds/run.js"
   },
   "dependencies": {
     "fastify": "^4.24.3",
