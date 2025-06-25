@@ -51,6 +51,21 @@ async function build() {
     return { status: 'OK', timestamp: new Date().toISOString() };
   });
 
+  // Temporary migration endpoint
+  fastify.post('/admin/migrate', async (request, reply) => {
+    try {
+      const runMigrations = require('./database/migrations/run');
+      await runMigrations();
+      return { success: true, message: 'Migrations completed successfully!' };
+    } catch (error) {
+      fastify.log.error('Migration failed:', error);
+      return reply.code(500).send({ 
+        success: false, 
+        error: error.message 
+      });
+    }
+  });
+
   return fastify;
 }
 
