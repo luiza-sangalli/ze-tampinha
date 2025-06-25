@@ -17,6 +17,20 @@ async function runMigrations() {
   });
 
   try {
+    // Check if migrations were already run by checking if users table exists
+    const checkResult = await pool.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_schema = 'public' 
+        AND table_name = 'users'
+      );
+    `);
+    
+    if (checkResult.rows[0].exists) {
+      console.log('✅ Database already migrated - skipping migrations');
+      return;
+    }
+
     // Get all migration files
     const migrationsDir = __dirname;
     const migrationFiles = fs.readdirSync(migrationsDir)
