@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: tampinha-api
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        value: tampinha_super_secret_jwt_2024_render_production
+      - key: TELEGRAM_BOT_TOKEN
+        value: 7785303759:AAEfOOOmRaic0Jbf_wHbcsZ3ZvCJRK2eGjo
+      - key: QR_CODE_SECRET
+        value: tampinha_qr_secret_2024_render_production
+      - key: POINTS_PER_SCAN
+        value: 1
+      - key: POINTS_FOR_REWARD
+        value: 10
+      - key: REWARD_CODE_EXPIRY_DAYS
+        value: 30
+      - key: LOG_LEVEL
+        value: info 
