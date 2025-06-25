@@ -1,16 +1,22 @@
 const fs = require('fs');
 const path = require('path');
 const { Pool } = require('pg');
-require('dotenv').config();
+
+// Only load .env in development
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 async function runMigrations() {
+  console.log('🔄 Running database migrations...');
+  console.log('📊 Environment:', process.env.NODE_ENV);
+  console.log('🔗 Database URL exists:', !!process.env.DATABASE_URL);
+  
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
   });
 
   try {
-    console.log('🔄 Running database migrations...');
-    
     // Get all migration files
     const migrationsDir = __dirname;
     const migrationFiles = fs.readdirSync(migrationsDir)

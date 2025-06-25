@@ -5,8 +5,10 @@ const fastify = require('fastify')({
 });
 const path = require('path');
 
-// Load environment variables
-require('dotenv').config();
+// Only load .env in development
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 // Register plugins
 async function build() {

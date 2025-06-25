@@ -1,6 +1,11 @@
 const { Pool } = require('pg');
 const fastifyPlugin = require('fastify-plugin');
 
+// Only load .env in development
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
 async function database(fastify, options) {
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
