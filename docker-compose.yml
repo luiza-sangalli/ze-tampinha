@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # Main application
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://tampinha_user:tampinha_pass@postgres:5432/tampinha_db
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
+      - WHATSAPP_API_TOKEN=your-whatsapp-api-token
+      - WHATSAPP_PHONE_NUMBER_ID=your-phone-number-id
+      - WHATSAPP_WEBHOOK_VERIFY_TOKEN=your-webhook-verify-token
+      - WHATSAPP_WEBHOOK_SECRET=your-webhook-secret
+      - QR_CODE_SECRET=your-qr-code-secret
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    volumes:
+      - app_logs:/usr/src/app/logs
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=tampinha_db
+      - POSTGRES_USER=tampinha_user
+      - POSTGRES_PASSWORD=tampinha_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # Nginx Load Balancer (for scaling)
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - app
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  app_logs: 
